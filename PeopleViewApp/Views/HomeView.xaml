@@ -27,9 +27,8 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <Button HorizontalAlignment="Right"
+                                        <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.NavigateUserPageCommand}" CommandParameter="{Binding}"
                                             x:Name="SaveBtn"
-                                            Command="{Binding DataContext.NavigateUserPageCommand}"
                                             Content="Edit"
                                             Foreground="Azure"
                                             Background="DarkCyan"
