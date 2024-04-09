@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="PeopleViewApp.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PeopleViewApp.Views" 
+             xmlns:viewmodels="clr-namespace:PeopleViewApp.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:HomeViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <ListView x:Name="UsersListBox" ItemsSource="{Binding Users}" SelectedItem="{Binding User}">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="First Name" DisplayMemberBinding="{Binding FirstName}" />
+                        <GridViewColumn Header="Last Name" DisplayMemberBinding="{Binding LastName}" />
+                        <GridViewColumn Header="Street Name" DisplayMemberBinding="{Binding StreetName}" />
+                        <GridViewColumn Header="House Number" DisplayMemberBinding="{Binding HouseNumber}" />
+                        <GridViewColumn Header="Apartment Number" DisplayMemberBinding="{Binding ApartmentNumber}" />
+                        <GridViewColumn Header="Postal Code" DisplayMemberBinding="{Binding PostalCode}" />
+                        <GridViewColumn Header="Town" DisplayMemberBinding="{Binding Town}" />
+                        <GridViewColumn Header="Phone Number" DisplayMemberBinding="{Binding PhoneNumber}" />
+                        <GridViewColumn Header="Date Of Birth" DisplayMemberBinding="{Binding DateOfBirth}" />
+                        <GridViewColumn Header="Age" DisplayMemberBinding="{Binding Age}" />
+                        <GridViewColumn Header="Action">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Button HorizontalAlignment="Right"
+                                            x:Name="SaveBtn"
+                                            Command="{Binding DataContext.NavigateUserPageCommand}"
+                                            Content="Edit"
+                                            Foreground="Azure"
+                                            Background="DarkCyan"
+                                            Height="35"
+                                            Width="70" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+
+        </ListView>
+    </Grid>
+</UserControl>

@@ -1,0 +1,197 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <Color x:Key="ColorYellow">#FFC20E</Color>
+    <Color x:Key="ColorYellow2">#FFB500</Color>
+    <Color x:Key="ColorBrown">#B67319</Color>
+    <Color x:Key="ColorWhite">#FFFFFF</Color>
+    <Color x:Key="ColorBlack">#000000</Color>
+    <Color x:Key="ColorDarkGray">#545857</Color>
+    <Color x:Key="ColorGray">#F2F2F2</Color>
+    <Color x:Key="ColorBlue">#1C5687</Color>
+
+    <SolidColorBrush x:Key="ColorDarkGrayBrush" Color="{StaticResource ColorDarkGray}" />
+    <SolidColorBrush x:Key="ColorYellow2Brush" Color="{StaticResource ColorYellow2}" />
+    <SolidColorBrush x:Key="ColorWhiteBrush" Color="{StaticResource ColorWhite}" />
+    <SolidColorBrush x:Key="ColorBlackBrush" Color="{StaticResource ColorBlack}" />
+    <SolidColorBrush x:Key="ColorGrayBrush" Color="{StaticResource ColorGray}" />
+    <SolidColorBrush x:Key="ColorBlueBrush" Color="{StaticResource ColorBlue}" />
+
+    <SolidColorBrush x:Key="YellowButtonMouseOverBackgroundBrush" Color="#EAA600" />
+    <SolidColorBrush x:Key="YellowButtonPressedBackgroundBrush" Color="#FFD366" />
+    <SolidColorBrush x:Key="YellowButtonDisabledBackgroundBrush" Color="#FFE199" />
+    <SolidColorBrush x:Key="YellowButtonMouseOverForegroundBrush" Color="#000000" />
+    <SolidColorBrush x:Key="YellowButtonPressedForegroundBrush" Color="#666666" />
+    <SolidColorBrush x:Key="YellowButtonDisabledForegroundBrush" Color="#999999" />
+
+    <SolidColorBrush x:Key="DarkButtonMouseOverBackgroundBrush" Color="#4A4D4C" />
+    <SolidColorBrush x:Key="DarkButtonPressedBackgroundBrush" Color="#868988" />
+    <SolidColorBrush x:Key="DarkButtonDisabledBackgroundBrush" Color="#BBBCBC" />
+    <SolidColorBrush x:Key="DarkButtonMouseOverForegroundBrush" Color="#E0E0E0" />
+    <SolidColorBrush x:Key="DarkButtonPressedForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DarkButtonDisabledForegroundBrush" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="TextBoxNormalBorderBrush" Color="#DDDDDD" />
+    <SolidColorBrush x:Key="TextBoxMouseOverBorderBrush" Color="#BBBCBC" />
+    <SolidColorBrush x:Key="TextBoxFocusedBorderBrush" Color="#868988" />
+    <SolidColorBrush x:Key="TextBoxSelectionBrush" Color="#BBBCBC" />
+
+    <SolidColorBrush x:Key="DialogContentBorderStrokeBrush" Color="#E5E5E5" />
+    <SolidColorBrush x:Key="WindowBorderOverlayBrush" Color="#0F000000" />
+
+    <system:Double x:Key="NormalFontSize">14</system:Double>
+    <system:Double x:Key="LargeFontSize">18</system:Double>
+    <system:Double x:Key="SmallFontSize">12</system:Double>
+
+    <system:Double x:Key="WindowHeight">720</system:Double>
+    <system:Double x:Key="WindowWidth">1080</system:Double>
+    <system:Double x:Key="WindowCaptionHeight">32</system:Double>
+    <system:Double x:Key="ImageConnectionHeight">60</system:Double>
+    <system:Double x:Key="ImageConnectionWidth">117</system:Double>
+
+    <Thickness x:Key="StackedButtonMargin">0 0 8 0</Thickness>
+    <Thickness x:Key="ImageConnectionMargin">0 8 16 8</Thickness>
+
+    <DropShadowEffect x:Key="RectangleShadow" Color="{StaticResource ColorDarkGray}" BlurRadius="8" Opacity="0.2"
+                      ShadowDepth="3" Direction="270" />
+
+    <Style x:Key="BaseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DarkButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Foreground" Value="{StaticResource ColorWhiteBrush}" />
+        <Setter Property="Background" Value="{StaticResource ColorDarkGrayBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource DarkButtonMouseOverBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource DarkButtonMouseOverForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource DarkButtonPressedBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource DarkButtonPressedForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource DarkButtonDisabledBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource DarkButtonDisabledForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="YellowButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Foreground" Value="{StaticResource ColorBlackBrush}" />
+        <Setter Property="Background" Value="{StaticResource ColorYellow2Brush}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource YellowButtonMouseOverBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource YellowButtonMouseOverForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource YellowButtonPressedBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource YellowButtonPressedForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource YellowButtonDisabledBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource YellowButtonDisabledForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="GridStyle" TargetType="{x:Type Grid}">
+        <Setter Property="Margin" Value="32" />
+        <Setter Property="Background" Value="{StaticResource ColorWhiteBrush}" />
+    </Style>
+
+    <Style x:Key="NumberedListRunStyle" TargetType="{x:Type Run}">
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style x:Key="WarningTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="Foreground" Value="{StaticResource ColorYellow2Brush}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="TextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="Foreground" Value="{StaticResource ColorDarkGrayBrush}" />
+        <Setter Property="FontWeight" Value="Regular" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="Margin" Value="5,17,25,5" />
+    </Style>
+
+    <Style x:Key="HeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="{StaticResource LargeFontSize}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,0,0,24" />
+    </Style>
+
+    <Style x:Key="DatePickerStyle" TargetType="{x:Type DatePicker}">
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="145" />
+        <Setter Property="Margin" Value="0 8 0 8" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="BorderBrush" Value="{StaticResource TextBoxNormalBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+
+    <Style x:Key="DialogInputTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="Margin" Value="0 8 0 8" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="SelectionBrush" Value="{StaticResource TextBoxSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource TextBoxNormalBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="AllowDrop" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBoxBase}">
+                    <Border Name="Border"
+                        CornerRadius="4"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer Margin="0" x:Name="PART_ContentHost" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="BorderBrush" Value="{StaticResource TextBoxMouseOverBorderBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="true">
+                            <Setter Property="BorderBrush" Value="{StaticResource TextBoxFocusedBorderBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
