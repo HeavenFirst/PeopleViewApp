@@ -9,7 +9,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ListView x:Name="UsersListBox" ItemsSource="{Binding Users}" SelectedItem="{Binding User}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="0" x:Name="UsersListBox" ItemsSource="{Binding Users}" SelectedItem="{Binding User, Mode=TwoWay}">            
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
@@ -23,26 +27,17 @@
                         <GridViewColumn Header="Phone Number" DisplayMemberBinding="{Binding PhoneNumber}" />
                         <GridViewColumn Header="Date Of Birth" DisplayMemberBinding="{Binding DateOfBirth}" />
                         <GridViewColumn Header="Age" DisplayMemberBinding="{Binding Age}" />
-                        <GridViewColumn Header="Action">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.NavigateUserPageCommand}" CommandParameter="{Binding}"
-                                            x:Name="SaveBtn"
-                                            Content="Edit"
-                                            Foreground="Azure"
-                                            Background="DarkCyan"
-                                            Height="35"
-                                            Width="70" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        
                     </GridView.Columns>
                 </GridView>
             </ListView.View>
-
         </ListView>
+        <StackPanel Grid.Row="1" Orientation="Horizontal"  HorizontalAlignment="Center">
+            <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.NavigateUserPageCommand}" CommandParameter="{Binding}"
+                    x:Name="EditBtn" Content="Edit" Style="{StaticResource YellowButtonStyle}" />
+            <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.DeleteSelectedRowCommand}" CommandParameter="{Binding}"
+                    x:Name="DeleteBtn" Content="Delete" Style="{StaticResource DarkButtonStyle}" />
+            <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.NewUserCreateCommand}" CommandParameter="{Binding}"
+                    x:Name="CreateBtn" Content="Create" Style="{StaticResource YellowButtonStyle}" />
+        </StackPanel>
     </Grid>
 </UserControl>

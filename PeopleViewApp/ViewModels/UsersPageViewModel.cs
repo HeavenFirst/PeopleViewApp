@@ -16,11 +16,18 @@ namespace PeopleViewApp.ViewModels
 
         public UsersPageViewModel(NavigationStore navigationStore)
         {
-            NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
-                () => new HomeViewModel(navigationStore));
-
             _user = new User();
-            //SaveCommand = new RelayCommand(SaveData);
+
+            NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
+                () => new HomeViewModel(navigationStore, _user, true));
+        }
+
+        public UsersPageViewModel(NavigationStore navigationStore, User user)
+        {
+            _user = user;
+
+            NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
+                () => new HomeViewModel(navigationStore, _user, false));
         }
 
         public string FirstName
