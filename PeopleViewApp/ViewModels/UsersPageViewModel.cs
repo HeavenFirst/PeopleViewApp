@@ -11,7 +11,6 @@ namespace PeopleViewApp.ViewModels
     {
         private User _user;
 
-        public ICommand SaveCommand { get; }
         public ICommand NavigateHomeCommand { get; }
 
         public UsersPageViewModel(NavigationStore navigationStore)
@@ -116,7 +115,7 @@ namespace PeopleViewApp.ViewModels
             set
             {
                 _user.DateOfBirth = value;
-                Age = value.ToString();
+                Age = CalculateAge();
                 OnPropertyChanged(nameof(DateOfBirth));
             }
         }
@@ -140,7 +139,7 @@ namespace PeopleViewApp.ViewModels
 
             var today = DateTime.Today;
 
-            var age = today.Year - DateOfBirth.Year;
+            int age = today.Year - DateOfBirth.Year;
 
             if (DateOfBirth.Date > today.AddYears(-age)) age--;
 

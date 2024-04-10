@@ -1,7 +1,6 @@
 ﻿using PeopleViewApp.Commands;
 using PeopleViewApp.Models;
 using PeopleViewApp.Stores;
-using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -63,11 +62,6 @@ namespace PeopleViewApp.ViewModels
         {
             var u = _users.FirstOrDefault(x => x.Id == user.Id);
             u = user;
-        }
-
-        private void CreateNewUser()
-        {
-            throw new NotImplementedException();
         }
 
         private void DeleteRow()
