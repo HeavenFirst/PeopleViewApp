@@ -47,6 +47,9 @@ namespace PeopleViewApp
                 (Configuration.GetSection(nameof(AppSettings)));
 
             services.AddScoped<IUsersApi, UsersApi>();
+
+            services.AddHttpClient();
+
             services.AddTransient(typeof(MainWindow));
         }
     }

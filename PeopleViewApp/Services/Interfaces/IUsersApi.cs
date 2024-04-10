@@ -8,6 +8,7 @@ namespace PeopleViewApp.Services.Interfaces
         Task<User> GetUser(int id);
         Task<User> EditUser(User user);
         Task DeleteUser(int id);
+        Task<User> CreateUser(User user);
 
     }
 }
