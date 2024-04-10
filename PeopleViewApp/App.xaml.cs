@@ -12,9 +12,13 @@ namespace PeopleViewApp
 {
     public partial class App : Application
     {
-        public IServiceProvider ServiceProvider { get; private set; }
+        public IServiceProvider _serviceProvider;
 
         public IConfiguration Configuration { get; private set; }
+
+        public App()
+        {           
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -27,10 +31,9 @@ namespace PeopleViewApp
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
             NavigationStore navigationStore = new();
 
-            navigationStore.CurrentViewModel = new HomeViewModel(navigationStore);
+            navigationStore.CurrentViewModel = new HomeViewModel(navigationStore, _serviceProvider.GetRequiredService<IUsersApi>());
 
             MainWindow = new MainWindow()
             {
@@ -41,16 +44,22 @@ namespace PeopleViewApp
             base.OnStartup(e);
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private void ConfigureServices(IServiceCollection serviceCollection)
         {
-            services.Configure<AppSettings>
+            var service = new ServiceCollection();
+
+            service.Configure<AppSettings>
                 (Configuration.GetSection(nameof(AppSettings)));
 
-            services.AddScoped<IUsersApi, UsersApi>();
+            service.AddScoped<IUsersApi, UsersApi>();
 
-            services.AddHttpClient();
+            service.AddHttpClient();
 
-            services.AddTransient(typeof(MainWindow));
+            service.AddTransient(typeof(HomeViewModel));
+
+            service.AddSingleton<NavigationStore>();
+
+            _serviceProvider = service.BuildServiceProvider();
         }
     }
 
