@@ -123,7 +123,7 @@ namespace PeopleViewApp.ViewModels
 
         public string Age
         {
-            get => CalculateAge();
+            get => _user.Age;
             set
             {
                 _user.Age = value;
@@ -145,14 +145,6 @@ namespace PeopleViewApp.ViewModels
             if (DateOfBirth.Date > today.AddYears(-age)) age--;
 
             return age.ToString();
-        }
-
-        private void SaveData()
-        {
-            MessageBox.Show($"data of {FirstName} {LastName} are saved!");
-            LastName = null;
-            FirstName = null;
-            _user = new User();
         }
     }
 }

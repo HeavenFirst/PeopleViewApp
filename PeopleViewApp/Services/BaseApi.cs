@@ -31,13 +31,21 @@ namespace PeopleViewApp.Services
                 message.Content = new StringContent(JsonConvert.SerializeObject(entety), System.Text.Encoding.UTF8, "application/json");
             }
 
-            var response = await client.SendAsync(message);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var contentStream = await response.Content.ReadAsStringAsync();
+                var response = await client.SendAsync(message);
 
-                entety = JsonConvert.DeserializeObject<T>(contentStream);
+                if (response.IsSuccessStatusCode)
+                {
+                    var contentStream = await response.Content.ReadAsStringAsync();
+
+                    entety = JsonConvert.DeserializeObject<T>(contentStream);
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                // Handle exception.
+                return null;
             }
 
             return entety;
