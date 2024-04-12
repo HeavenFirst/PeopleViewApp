@@ -158,6 +158,17 @@
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
+    <Style x:Key="ListViewStyle" TargetType="{x:Type ListView}">
+        <Setter Property="MinHeight" Value="250" />
+        <Setter Property="MinWidth" Value="450" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Foreground" Value="{StaticResource TextBoxMouseOverBorderBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style x:Key="DialogInputTextBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />

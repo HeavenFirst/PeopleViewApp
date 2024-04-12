@@ -20,23 +20,24 @@ namespace PeopleViewApp.Services
         protected async Task<T> HttpRequestRun<T>(HttpMethod method, string path, T entety = null) where T : class
         {
             HttpClient client = _httpClientFactory.CreateClient();
+            client.Timeout = new TimeSpan(0, 1, 0);
             HttpRequestMessage message = new(method, $"{_settings.DomenUrl}{path}");
+            message.Headers.Add("Accept", "application/json");
 
             if (entety is not null
                 && (method == HttpMethod.Post || method == HttpMethod.Put))
             {
-                message.Headers.Add("Accept", "application/json");
+                var t = JsonConvert.SerializeObject(entety);
                 message.Content = new StringContent(JsonConvert.SerializeObject(entety), System.Text.Encoding.UTF8, "application/json");
             }
 
-            HttpResponseMessage response = await client.SendAsync(message);
+            var response = await client.SendAsync(message);
 
             if (response.IsSuccessStatusCode)
             {
-                using var contentStream =
-                    await response.Content.ReadAsStreamAsync();
+                var contentStream = await response.Content.ReadAsStringAsync();
 
-                entety = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(contentStream);
+                entety = JsonConvert.DeserializeObject<T>(contentStream);
             }
 
             return entety;

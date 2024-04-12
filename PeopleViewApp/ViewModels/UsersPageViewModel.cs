@@ -1,5 +1,6 @@
 ﻿using PeopleViewApp.Commands;
 using PeopleViewApp.Models;
+using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,20 +14,20 @@ namespace PeopleViewApp.ViewModels
 
         public ICommand NavigateHomeCommand { get; }
 
-        public UsersPageViewModel(NavigationStore navigationStore)
+        public UsersPageViewModel(NavigationStore navigationStore, IUsersApi usersApi)
         {
             _user = new User();
 
             NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
-                () => new HomeViewModel(navigationStore, _user, true));
+                () => new HomeViewModel(navigationStore, usersApi, _user, true));
         }
 
-        public UsersPageViewModel(NavigationStore navigationStore, User user)
+        public UsersPageViewModel(NavigationStore navigationStore, User user, IUsersApi usersApi)
         {
             _user = user;
 
             NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
-                () => new HomeViewModel(navigationStore, _user, false));
+                () => new HomeViewModel(navigationStore, usersApi, _user, false));
         }
 
         public string FirstName

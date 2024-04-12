@@ -1,5 +1,6 @@
 ﻿using PeopleViewApp.Commands;
 using PeopleViewApp.Models;
+using PeopleViewApp.Services;
 using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
 using System.Collections.ObjectModel;
@@ -12,50 +13,63 @@ namespace PeopleViewApp.ViewModels
         private readonly IUsersApi _usersApi;
 
         private static ObservableCollection<User> _users = [];
-        private User _user;
+        private static User _user;
         public string Name => "Home Page";
 
         public ICommand NavigateUserPageCommand { get; }
         public ICommand DeleteSelectedRowCommand { get; }
         public ICommand NewUserCreateCommand { get; }
 
-        public HomeViewModel(NavigationStore navigationStore, 
-            IUsersApi usersApi)
+        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi)
         {
-            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore, _user));
-
-            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
-
-            NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore));
-
             _usersApi = usersApi;
 
-            _users = new ObservableCollection<User>(_usersApi.GetUsers().Result);            
-        }
-
-        public HomeViewModel(NavigationStore navigationStore, User user, bool? IsCreating)
-        {
-            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore, 
-                () => new UsersPageViewModel(navigationStore, _user));
+            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
+                () => new UsersPageViewModel(navigationStore, _user, _usersApi));
 
             DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
 
             NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore));
+                () => new UsersPageViewModel(navigationStore, _usersApi));
+
+            Task.Run(() => GetUsers()).Wait();
+        }
+
+        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi, User user, bool? IsCreating)
+        {
+            _usersApi = usersApi;
+            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore, 
+                () => new UsersPageViewModel(navigationStore, _user, _usersApi));
+
+            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
+
+            NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
+                () => new UsersPageViewModel(navigationStore, _usersApi));
            
             if (_users.Count > 0)
             {
                 if (IsCreating == true)
                 {
+                    Task.Run(() => CreateUserFromDb(user)).Wait();
                     _users.Add(user);
                 }
                 else if (IsCreating == false)
                 {
-                    EditUser(user);
+                    Task.Run(() => EditUserFromDb(_user)).Wait();                    
                 }
             }
+        }
+                
+        public ObservableCollection<User> Users
+        {
+            get => _users;
+            set => SetProperty(ref _users, value);
+        }
+
+        public User User
+        {
+            get => _user;
+            set => SetProperty(ref _user, value);
         }
 
         private void EditUser(User user)
@@ -66,19 +80,29 @@ namespace PeopleViewApp.ViewModels
 
         private void DeleteRow()
         {
+            Task.Run(() => DeleteUser()).Wait();
             Users.Remove(User);
         }
 
-        public ObservableCollection<User> Users 
+        private async Task DeleteUser()
         {
-            get => _users;
-            set => SetProperty(ref _users, value);
+            await _usersApi.DeleteUser(_user.Id);
         }
 
-        public User User
+        private async Task GetUsers()
         {
-            get => _user;
-            set => SetProperty(ref _user, value);
+            var users = await _usersApi.GetUsers();
+            _users = new ObservableCollection<User>(users);
+        }
+        private async Task CreateUserFromDb(User user)
+        {
+            await _usersApi.CreateUser(user);
+        }
+
+        private async Task EditUserFromDb(User user)
+        {
+            var editedUser = await _usersApi.EditUser(user);
+            EditUser(editedUser);
         }
     }
 }

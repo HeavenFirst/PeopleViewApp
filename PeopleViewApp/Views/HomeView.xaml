@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" x:Name="UsersListBox" ItemsSource="{Binding Users}" SelectedItem="{Binding User, Mode=TwoWay}">            
+        <ListView Grid.Row="0" x:Name="UsersListBox" ItemsSource="{Binding Users}" SelectedItem="{Binding User, Mode=TwoWay}" Style="{StaticResource ListViewStyle}">            
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
