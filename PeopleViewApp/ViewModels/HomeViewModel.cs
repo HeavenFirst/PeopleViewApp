@@ -1,5 +1,7 @@
 ﻿using PeopleViewApp.Commands;
 using PeopleViewApp.Models;
+using PeopleViewApp.Services;
+using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -8,55 +10,99 @@ namespace PeopleViewApp.ViewModels
 {
     public class HomeViewModel : ViewModelBase
     {
-        private ObservableCollection<User> _users = [];
-        private User _user;
+        private readonly IUsersApi _usersApi;
+
+        private static ObservableCollection<User> _users = [];
+        private static User _user;
         public string Name => "Home Page";
 
         public ICommand NavigateUserPageCommand { get; }
+        public ICommand DeleteSelectedRowCommand { get; }
+        public ICommand NewUserCreateCommand { get; }
 
-        public HomeViewModel(NavigationStore navigationStore)
+        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi)
         {
-            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore, 
-                () => new UsersPageViewModel(navigationStore));
+            _usersApi = usersApi;
 
-            _users = new ObservableCollection<User>
-            {
-                new User{FirstName = "Dima", LastName = "Shostak", DateOfBirth = DateTime.Now.AddYears(-40), StreetName = "Daslovicha", ApartmentNumber = "2",
-                        HouseNumber = "3", Town = "New York", Id = Guid.NewGuid().ToString(), PhoneNumber = "+1234567890", PostalCode = "123-1234" },
-                new User{FirstName = "Dasha", LastName = "Shostak", DateOfBirth = DateTime.Now.AddYears(-33), StreetName = "Perslovicha", ApartmentNumber = "2",
-                        HouseNumber = "3",Town = "New York", Id = Guid.NewGuid().ToString(), PhoneNumber = "+5234567890", PostalCode = "123-1234" },
-                new User{FirstName = "D", LastName = "Sho", DateOfBirth = DateTime.Now.AddYears(-45), StreetName = "Wraslovicha", ApartmentNumber = "7",
-                        HouseNumber = "3",Town = "Boston", Id = Guid.NewGuid().ToString(), PhoneNumber = "+1234567890", PostalCode = "123-1234" },
-                new User{FirstName = "Dima", LastName = "ASDFT", DateOfBirth = DateTime.Now.AddYears(-40), StreetName = "Wrovicha", ApartmentNumber = "8",
-                        HouseNumber = "3",Town = "New York", Id = Guid.NewGuid().ToString(), PhoneNumber = "+1234567890", PostalCode = "123-1234" },
-                new User{FirstName = "Lesha", LastName = "Buss", DateOfBirth = DateTime.Now.AddYears(-18), StreetName = "Fvicha", ApartmentNumber = "2",
-                        HouseNumber = "3",Town = "Chikago", Id = Guid.NewGuid().ToString(), PhoneNumber = "+1234567890", PostalCode = "123-1234" },
-                new User{FirstName = "Gosha", LastName = "Koi", DateOfBirth = DateTime.Now.AddYears(-25), StreetName = "Grepovicha", ApartmentNumber = "1",
-                        HouseNumber = "3",Town = "Madrid", Id = Guid.NewGuid().ToString(), PhoneNumber = "+1234567890", PostalCode = "123-1234" },
-                new User{FirstName = "Igor", LastName = "Ger", DateOfBirth = DateTime.Now.AddYears(-13), StreetName = "Bovicha", ApartmentNumber = "9",
-                        HouseNumber = "3",Town = "London", Id = Guid.NewGuid().ToString(), PhoneNumber = "+1234567890", PostalCode = "123-1234" }
-            };
-            //UsersListBox.ItemsSource = _user;
+            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
+                () => new UsersPageViewModel(navigationStore, _user, _usersApi));
+
+            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
+
+            NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
+                () => new UsersPageViewModel(navigationStore, _usersApi));
+
+            Task.Run(() => GetUsers()).Wait();
         }
 
-        public ObservableCollection<User> Users 
+        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi, User user, bool? IsCreating)
+        {
+            _usersApi = usersApi;
+            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore, 
+                () => new UsersPageViewModel(navigationStore, _user, _usersApi));
+
+            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
+
+            NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
+                () => new UsersPageViewModel(navigationStore, _usersApi));
+           
+            if (_users.Count > 0)
+            {
+                if (IsCreating == true)
+                {
+                    Task.Run(() => CreateUserFromDb(user)).Wait();
+                    _users.Add(user);
+                }
+                else if (IsCreating == false)
+                {
+                    Task.Run(() => EditUserFromDb(_user)).Wait();                    
+                }
+            }
+        }
+                
+        public ObservableCollection<User> Users
         {
             get => _users;
-            set
-            {
-                _users = value;
-                OnPropertyChanged(nameof(Users));
-            }
+            set => SetProperty(ref _users, value);
         }
 
         public User User
         {
             get => _user;
-            set
-            {
-                _user = value;
-                OnPropertyChanged(nameof(User));
-            }
+            set => SetProperty(ref _user, value);
+        }
+
+        private void EditUser(User user)
+        {
+            var u = _users.FirstOrDefault(x => x.Id == user.Id);
+            u = user;
+        }
+
+        private void DeleteRow()
+        {
+            Task.Run(() => DeleteUser()).Wait();
+            Users.Remove(User);
+        }
+
+        private async Task DeleteUser()
+        {
+            await _usersApi.DeleteUser(_user.Id);
+        }
+
+        private async Task GetUsers()
+        {
+            var users = await _usersApi.GetUsers();
+            _users = new ObservableCollection<User>(users);
+        }
+        private async Task CreateUserFromDb(User user)
+        {
+            await _usersApi.CreateUser(user);
+        }
+
+        private async Task EditUserFromDb(User user)
+        {
+            var editedUser = await _usersApi.EditUser(user);
+            EditUser(editedUser);
         }
     }
 }

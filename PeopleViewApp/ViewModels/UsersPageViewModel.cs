@@ -1,5 +1,6 @@
 ﻿using PeopleViewApp.Commands;
 using PeopleViewApp.Models;
+using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,16 +12,22 @@ namespace PeopleViewApp.ViewModels
     {
         private User _user;
 
-        public ICommand SaveCommand { get; }
         public ICommand NavigateHomeCommand { get; }
 
-        public UsersPageViewModel(NavigationStore navigationStore)
+        public UsersPageViewModel(NavigationStore navigationStore, IUsersApi usersApi)
         {
-            NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
-                () => new HomeViewModel(navigationStore));
-
             _user = new User();
-            //SaveCommand = new RelayCommand(SaveData);
+
+            NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
+                () => new HomeViewModel(navigationStore, usersApi, _user, true));
+        }
+
+        public UsersPageViewModel(NavigationStore navigationStore, User user, IUsersApi usersApi)
+        {
+            _user = user;
+
+            NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
+                () => new HomeViewModel(navigationStore, usersApi, _user, false));
         }
 
         public string FirstName
@@ -109,14 +116,14 @@ namespace PeopleViewApp.ViewModels
             set
             {
                 _user.DateOfBirth = value;
-                Age = value.ToString();
+                Age = CalculateAge();
                 OnPropertyChanged(nameof(DateOfBirth));
             }
         }
 
         public string Age
         {
-            get => CalculateAge();
+            get => _user.Age;
             set
             {
                 _user.Age = value;
@@ -133,19 +140,11 @@ namespace PeopleViewApp.ViewModels
 
             var today = DateTime.Today;
 
-            var age = today.Year - DateOfBirth.Year;
+            int age = today.Year - DateOfBirth.Year;
 
             if (DateOfBirth.Date > today.AddYears(-age)) age--;
 
             return age.ToString();
-        }
-
-        private void SaveData()
-        {
-            MessageBox.Show($"data of {FirstName} {LastName} are saved!");
-            LastName = null;
-            FirstName = null;
-            _user = new User();
         }
     }
 }
