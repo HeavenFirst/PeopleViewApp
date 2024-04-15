@@ -2,7 +2,7 @@
 
 namespace PeopleViewApp.Commands
 {
-    internal class RelayCommand : ICommand
+    public class RelayCommand : ICommand
     {
         private readonly Func<object, bool> _canExecuteFunc;
         private readonly Action<object> _executeAction;
@@ -39,7 +39,7 @@ namespace PeopleViewApp.Commands
             }
         }
 
-        public bool CanExecute(object parameter) => true;// _canExecuteFunc?.Invoke(parameter) ?? true;
+        public bool CanExecute(object parameter) => _canExecuteFunc?.Invoke(parameter) ?? true;
 
         public virtual void Execute(object parameter) => _executeAction(parameter);
 

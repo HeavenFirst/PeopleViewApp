@@ -19,7 +19,7 @@ namespace PeopleViewApp.ViewModels
             _user = new User();
 
             NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
-                () => new HomeViewModel(navigationStore, usersApi, _user, true));
+                () => new HomeViewModel(navigationStore, usersApi, _user, true), FieldsChecking);
         }
 
         public UsersPageViewModel(NavigationStore navigationStore, User user, IUsersApi usersApi)
@@ -27,7 +27,25 @@ namespace PeopleViewApp.ViewModels
             _user = user;
 
             NavigateHomeCommand = new NavigateCommand<HomeViewModel>(navigationStore,
-                () => new HomeViewModel(navigationStore, usersApi, _user, false));
+                () => new HomeViewModel(navigationStore, usersApi, _user, false), FieldsChecking);
+        }
+
+        private bool FieldsChecking()
+        {
+            if (string.IsNullOrWhiteSpace(FirstName)
+                || string.IsNullOrWhiteSpace(LastName)
+                || string.IsNullOrWhiteSpace(HouseNumber) || HouseNumber.ToCharArray().Any(x => !char.IsDigit(x))
+                || ApartmentNumber?.ToCharArray().Any(x => !char.IsDigit(x)) == true
+                || string.IsNullOrWhiteSpace(PostalCode)
+                || string.IsNullOrWhiteSpace(Town)
+                || string.IsNullOrWhiteSpace(PhoneNumber))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public string FirstName

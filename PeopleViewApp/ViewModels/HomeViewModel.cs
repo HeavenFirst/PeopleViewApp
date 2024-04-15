@@ -25,38 +25,42 @@ namespace PeopleViewApp.ViewModels
             _usersApi = usersApi;
 
             NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore, _user, _usersApi));
+                () => new UsersPageViewModel(navigationStore, _user, _usersApi), IsUserSelected);
 
-            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
+            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), IsUserSelected);
 
             NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore, _usersApi));
+                () => new UsersPageViewModel(navigationStore, _usersApi), () => true);
 
             Task.Run(() => GetUsers()).Wait();
+        }
+
+        private bool IsUserSelected()
+        {
+            return User != null;
         }
 
         public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi, User user, bool? IsCreating)
         {
             _usersApi = usersApi;
+
+            //_user = null;
             NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore, 
-                () => new UsersPageViewModel(navigationStore, _user, _usersApi));
+                () => new UsersPageViewModel(navigationStore, _user, _usersApi), IsUserSelected);
 
             DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
 
             NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore, _usersApi));
-           
-            if (_users.Count > 0)
+                () => new UsersPageViewModel(navigationStore, _usersApi), IsUserSelected);
+                       
+            if (IsCreating == true)
             {
-                if (IsCreating == true)
-                {
-                    Task.Run(() => CreateUserFromDb(user)).Wait();
-                    _users.Add(user);
-                }
-                else if (IsCreating == false)
-                {
-                    Task.Run(() => EditUserFromDb(_user)).Wait();                    
-                }
+                Task.Run(() => CreateUserFromDb(user)).Wait();
+                _users.Add(user);
+            }
+            else if (IsCreating == false)
+            {
+                Task.Run(() => EditUserFromDb(_user)).Wait();                    
             }
         }
                 
