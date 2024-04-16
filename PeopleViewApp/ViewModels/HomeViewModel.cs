@@ -17,6 +17,7 @@ namespace PeopleViewApp.ViewModels
         public ICommand NavigateUserPageCommand { get; }
         public ICommand DeleteSelectedRowCommand { get; }
         public ICommand CreateUserCommand { get; }
+        public ICommand RefreshCommand { get; }
 
         public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi, User user = null, bool? IsCreating = null)
         {
@@ -29,6 +30,8 @@ namespace PeopleViewApp.ViewModels
 
             CreateUserCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
                 () => new UsersPageViewModel(navigationStore, _usersApi), () => true);
+
+            RefreshCommand = new RelayCommand(() => GetUserAsync(), () => true);
 
             UserChecking(user, IsCreating);
         }
@@ -66,7 +69,7 @@ namespace PeopleViewApp.ViewModels
             }
             else
             {
-                Task.Run(() => GetUsers()).Wait();
+                GetUserAsync();
             }
         }
 
@@ -81,6 +84,11 @@ namespace PeopleViewApp.ViewModels
 
         private async Task DeleteUser() =>
             await _usersApi.DeleteUser(_user.Id);
+
+        private void GetUserAsync()
+        {
+            Task.Run(() => GetUsers()).Wait();
+        }
 
         private async Task GetUsers()
         {

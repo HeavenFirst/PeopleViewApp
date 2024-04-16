@@ -36,8 +36,10 @@
                     x:Name="EditBtn" Content="Edit" Style="{StaticResource YellowButtonStyle}" />
             <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.DeleteSelectedRowCommand}" CommandParameter="{Binding}"
                     x:Name="DeleteBtn" Content="Delete" Style="{StaticResource DarkButtonStyle}" />
-            <Button Command="{Binding ElementName=UsersListBox, Path=DataContext.CreateUserCommand}" CommandParameter="{Binding}"
+            <Button Command="{Binding CreateUserCommand}" CommandParameter="{Binding}"
                     x:Name="CreateBtn" Content="Create" Style="{StaticResource YellowButtonStyle}" />
+            <Button Command="{Binding RefreshCommand}" CommandParameter="{Binding}"
+                    x:Name="RefreshBtn" Content="Refresh" Style="{StaticResource DarkButtonStyle}" />
         </StackPanel>
     </Grid>
 </UserControl>
