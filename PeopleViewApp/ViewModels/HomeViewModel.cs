@@ -1,6 +1,5 @@
 ﻿using PeopleViewApp.Commands;
 using PeopleViewApp.Models;
-using PeopleViewApp.Services;
 using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
 using System.Collections.ObjectModel;
@@ -14,13 +13,12 @@ namespace PeopleViewApp.ViewModels
 
         private static ObservableCollection<User> _users = [];
         private static User _user;
-        public string Name => "Home Page";
 
         public ICommand NavigateUserPageCommand { get; }
         public ICommand DeleteSelectedRowCommand { get; }
-        public ICommand NewUserCreateCommand { get; }
+        public ICommand CreateUserCommand { get; }
 
-        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi)
+        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi, User user = null, bool? IsCreating = null)
         {
             _usersApi = usersApi;
 
@@ -29,41 +27,12 @@ namespace PeopleViewApp.ViewModels
 
             DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), IsUserSelected);
 
-            NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
+            CreateUserCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
                 () => new UsersPageViewModel(navigationStore, _usersApi), () => true);
 
-            Task.Run(() => GetUsers()).Wait();
+            UserChecking(user, IsCreating);
         }
 
-        private bool IsUserSelected()
-        {
-            return User != null;
-        }
-
-        public HomeViewModel(NavigationStore navigationStore, IUsersApi usersApi, User user, bool? IsCreating)
-        {
-            _usersApi = usersApi;
-
-            //_user = null;
-            NavigateUserPageCommand = new NavigateCommand<UsersPageViewModel>(navigationStore, 
-                () => new UsersPageViewModel(navigationStore, _user, _usersApi), IsUserSelected);
-
-            DeleteSelectedRowCommand = new RelayCommand(() => DeleteRow(), () => true);
-
-            NewUserCreateCommand = new NavigateCommand<UsersPageViewModel>(navigationStore,
-                () => new UsersPageViewModel(navigationStore, _usersApi), IsUserSelected);
-                       
-            if (IsCreating == true)
-            {
-                Task.Run(() => CreateUserFromDb(user)).Wait();
-                _users.Add(user);
-            }
-            else if (IsCreating == false)
-            {
-                Task.Run(() => EditUserFromDb(_user)).Wait();                    
-            }
-        }
-                
         public ObservableCollection<User> Users
         {
             get => _users;
@@ -76,11 +45,33 @@ namespace PeopleViewApp.ViewModels
             set => SetProperty(ref _user, value);
         }
 
-        private void EditUser(User user)
+        private bool IsUserSelected()
         {
-            var u = _users.FirstOrDefault(x => x.Id == user.Id);
-            u = user;
+            return User != null;
         }
+
+        private void UserChecking(User user, bool? IsCreating)
+        {
+            if (user is not null)
+            {
+                if (IsCreating == true)
+                {
+                    Task.Run(() => SaveUser(user)).Wait();
+                    _users.Add(user);
+                }
+                else if (IsCreating == false)
+                {
+                    Task.Run(() => SaveUsersChanges(_user)).Wait();
+                }
+            }
+            else
+            {
+                Task.Run(() => GetUsers()).Wait();
+            }
+        }
+
+        private static void EditUser(User user) =>
+            _users.FirstOrDefault(x => x.Id == user.Id);
 
         private void DeleteRow()
         {
@@ -88,22 +79,18 @@ namespace PeopleViewApp.ViewModels
             Users.Remove(User);
         }
 
-        private async Task DeleteUser()
-        {
+        private async Task DeleteUser() =>
             await _usersApi.DeleteUser(_user.Id);
-        }
 
         private async Task GetUsers()
         {
             var users = await _usersApi.GetUsers();
             _users = new ObservableCollection<User>(users);
         }
-        private async Task CreateUserFromDb(User user)
-        {
+        private async Task SaveUser(User user) =>
             await _usersApi.CreateUser(user);
-        }
 
-        private async Task EditUserFromDb(User user)
+        private async Task SaveUsersChanges(User user)
         {
             var editedUser = await _usersApi.EditUser(user);
             EditUser(editedUser);
