@@ -2,7 +2,6 @@
 using PeopleViewApp.Models;
 using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
-using System.Windows;
 using System.Windows.Input;
 
 namespace PeopleViewApp.ViewModels
@@ -29,25 +28,12 @@ namespace PeopleViewApp.ViewModels
                 () => new HomeViewModel(navigationStore, usersApi, _user, false), FieldsChecking);
         }
 
-        private bool FieldsChecking() =>
-            !string.IsNullOrWhiteSpace(FirstName)
-                && !string.IsNullOrWhiteSpace(LastName)
-                && !string.IsNullOrWhiteSpace(HouseNumber)
-                && !HouseNumber.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.IsLetter(x)))
-                && (ApartmentNumber?.ToCharArray().Any(x => !char.IsDigit(x))) != true
-                && !string.IsNullOrWhiteSpace(PostalCode)
-                && !PostalCode.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.IsLetter(x) || char.Equals(x, '-')))
-                && !string.IsNullOrWhiteSpace(Town)
-                && !string.IsNullOrWhiteSpace(PhoneNumber)
-                && !PhoneNumber.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.Equals(x, '+')))
-                && DateOfBirth.Year < DateTime.UtcNow.Year && DateOfBirth != DateTime.MinValue;
-
         public string FirstName
         {
-            get => _user.FirstName.Trim();
+            get => _user.FirstName;
             set
             {
-                _user.FirstName = value.Trim();
+                _user.FirstName = value?.Trim();
                 OnPropertyChanged(nameof(FirstName));
             }
         }
@@ -57,7 +43,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.LastName;
             set
             {
-                _user.LastName = value.Trim();
+                _user.LastName = value?.Trim();
                 OnPropertyChanged(nameof(LastName));
             }
         }
@@ -67,7 +53,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.StreetName;
             set
             {
-                _user.StreetName = value.Trim();
+                _user.StreetName = value?.Trim();
                 OnPropertyChanged(nameof(StreetName));
             }
         }
@@ -77,7 +63,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.HouseNumber;
             set
             {
-                _user.HouseNumber = value.Trim();
+                _user.HouseNumber = value?.Trim();
                 OnPropertyChanged(nameof(HouseNumber));
             }
         }
@@ -87,7 +73,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.ApartmentNumber;
             set
             {
-                _user.ApartmentNumber = value.Trim();
+                _user.ApartmentNumber = value?.Trim();
                 OnPropertyChanged(nameof(ApartmentNumber));
             }
         }
@@ -97,7 +83,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.PostalCode;
             set
             {
-                _user.PostalCode = value.Trim();
+                _user.PostalCode = value?.Trim();
                 OnPropertyChanged(nameof(PostalCode));
             }
         }
@@ -107,7 +93,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.Town;
             set
             {
-                _user.Town = value.Trim();
+                _user.Town = value?.Trim();
                 OnPropertyChanged(nameof(Town));
             }
         }
@@ -117,7 +103,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.PhoneNumber;
             set
             {
-                _user.PhoneNumber = value.Trim();
+                _user.PhoneNumber = value?.Trim();
                 OnPropertyChanged(nameof(PhoneNumber));
             }
         }
@@ -158,5 +144,46 @@ namespace PeopleViewApp.ViewModels
 
             return age.ToString();
         }
+
+        private bool FieldsChecking() =>
+            FirstNameChecking()
+                && LastNameChecking()
+                && StreetNameChecking()
+                && HouseNumberChecking()
+                && ApartmentNumberChecking()
+                && PostalCodeChecking()
+                && TownChecking()
+                && PhoneNumberCheching()
+                && DateOfBirthChecking();
+
+        private bool StreetNameChecking() =>
+            !string.IsNullOrWhiteSpace(StreetName);
+
+        private bool DateOfBirthChecking() =>
+            DateOfBirth.Year < DateTime.UtcNow.Year && DateOfBirth != DateTime.MinValue;
+
+        private bool PhoneNumberCheching() =>
+            !string.IsNullOrWhiteSpace(PhoneNumber)
+                && !PhoneNumber.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.Equals(x, '+')));
+
+        private bool TownChecking() => !string.IsNullOrWhiteSpace(Town);
+
+        private bool ApartmentNumberChecking() =>
+            (ApartmentNumber?.ToCharArray().Any(x => !char.IsDigit(x))) != true;
+
+        private bool LastNameChecking() => !string.IsNullOrWhiteSpace(LastName);
+
+        private bool FirstNameChecking() => !string.IsNullOrWhiteSpace(FirstName);
+
+        private bool HouseNumberChecking() =>
+            !string.IsNullOrWhiteSpace(HouseNumber)
+                && !HouseNumber.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.IsLetter(x)));
+
+        private bool PostalCodeChecking() =>
+            !string.IsNullOrWhiteSpace(PostalCode)
+                && !PostalCode.ToCharArray().Any(x => !(char.IsDigit(x)
+                    || char.IsWhiteSpace(x)
+                    || char.IsLetter(x)
+                    || char.Equals(x, '-')));
     }
 }
