@@ -3,7 +3,6 @@ using PeopleViewApp.Models;
 using PeopleViewApp.Services.Interfaces;
 using PeopleViewApp.Stores;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PeopleViewApp.ViewModels
@@ -30,30 +29,25 @@ namespace PeopleViewApp.ViewModels
                 () => new HomeViewModel(navigationStore, usersApi, _user, false), FieldsChecking);
         }
 
-        private bool FieldsChecking()
-        {
-            if (string.IsNullOrWhiteSpace(FirstName)
-                || string.IsNullOrWhiteSpace(LastName)
-                || string.IsNullOrWhiteSpace(HouseNumber) || HouseNumber.ToCharArray().Any(x => !char.IsDigit(x))
-                || ApartmentNumber?.ToCharArray().Any(x => !char.IsDigit(x)) == true
-                || string.IsNullOrWhiteSpace(PostalCode)
-                || string.IsNullOrWhiteSpace(Town)
-                || string.IsNullOrWhiteSpace(PhoneNumber))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        private bool FieldsChecking() =>
+            !string.IsNullOrWhiteSpace(FirstName)
+                && !string.IsNullOrWhiteSpace(LastName)
+                && !string.IsNullOrWhiteSpace(HouseNumber)
+                && !HouseNumber.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.IsLetter(x)))
+                && (ApartmentNumber?.ToCharArray().Any(x => !char.IsDigit(x))) != true
+                && !string.IsNullOrWhiteSpace(PostalCode)
+                && !PostalCode.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.IsLetter(x) || char.Equals(x, '-')))
+                && !string.IsNullOrWhiteSpace(Town)
+                && !string.IsNullOrWhiteSpace(PhoneNumber)
+                && !PhoneNumber.ToCharArray().Any(x => !(char.IsDigit(x) || char.IsWhiteSpace(x) || char.Equals(x, '+')))
+                && DateOfBirth.Year < DateTime.UtcNow.Year && DateOfBirth != DateTime.MinValue;
 
         public string FirstName
         {
-            get => _user.FirstName;
+            get => _user.FirstName.Trim();
             set
             {
-                _user.FirstName = value;
+                _user.FirstName = value.Trim();
                 OnPropertyChanged(nameof(FirstName));
             }
         }
@@ -63,7 +57,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.LastName;
             set
             {
-                _user.LastName = value;
+                _user.LastName = value.Trim();
                 OnPropertyChanged(nameof(LastName));
             }
         }
@@ -73,7 +67,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.StreetName;
             set
             {
-                _user.StreetName = value;
+                _user.StreetName = value.Trim();
                 OnPropertyChanged(nameof(StreetName));
             }
         }
@@ -83,7 +77,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.HouseNumber;
             set
             {
-                _user.HouseNumber = value;
+                _user.HouseNumber = value.Trim();
                 OnPropertyChanged(nameof(HouseNumber));
             }
         }
@@ -93,7 +87,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.ApartmentNumber;
             set
             {
-                _user.ApartmentNumber = value;
+                _user.ApartmentNumber = value.Trim();
                 OnPropertyChanged(nameof(ApartmentNumber));
             }
         }
@@ -103,7 +97,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.PostalCode;
             set
             {
-                _user.PostalCode = value;
+                _user.PostalCode = value.Trim();
                 OnPropertyChanged(nameof(PostalCode));
             }
         }
@@ -113,7 +107,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.Town;
             set
             {
-                _user.Town = value;
+                _user.Town = value.Trim();
                 OnPropertyChanged(nameof(Town));
             }
         }
@@ -123,7 +117,7 @@ namespace PeopleViewApp.ViewModels
             get => _user.PhoneNumber;
             set
             {
-                _user.PhoneNumber = value;
+                _user.PhoneNumber = value.Trim();
                 OnPropertyChanged(nameof(PhoneNumber));
             }
         }
