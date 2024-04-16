@@ -37,21 +37,9 @@
     <SolidColorBrush x:Key="TextBoxFocusedBorderBrush" Color="#868988" />
     <SolidColorBrush x:Key="TextBoxSelectionBrush" Color="#BBBCBC" />
 
-    <SolidColorBrush x:Key="DialogContentBorderStrokeBrush" Color="#E5E5E5" />
-    <SolidColorBrush x:Key="WindowBorderOverlayBrush" Color="#0F000000" />
-
     <system:Double x:Key="NormalFontSize">14</system:Double>
     <system:Double x:Key="LargeFontSize">18</system:Double>
     <system:Double x:Key="SmallFontSize">12</system:Double>
-
-    <system:Double x:Key="WindowHeight">720</system:Double>
-    <system:Double x:Key="WindowWidth">1080</system:Double>
-    <system:Double x:Key="WindowCaptionHeight">32</system:Double>
-    <system:Double x:Key="ImageConnectionHeight">60</system:Double>
-    <system:Double x:Key="ImageConnectionWidth">117</system:Double>
-
-    <Thickness x:Key="StackedButtonMargin">0 0 8 0</Thickness>
-    <Thickness x:Key="ImageConnectionMargin">0 8 16 8</Thickness>
 
     <DropShadowEffect x:Key="RectangleShadow" Color="{StaticResource ColorDarkGray}" BlurRadius="8" Opacity="0.2"
                       ShadowDepth="3" Direction="270" />
@@ -148,7 +136,7 @@
     <Style x:Key="DatePickerStyle" TargetType="{x:Type DatePicker}">
         <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
         <Setter Property="Height" Value="25" />
-        <Setter Property="Width" Value="145" />
+        <Setter Property="Width" Value="200" />
         <Setter Property="Margin" Value="0 8 0 8" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="Height" Value="38" />
@@ -181,8 +169,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBoxBase}">
-                    <Border Name="Border"
-                        CornerRadius="4"
+                    <Border Name="Border"                        
                         Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
