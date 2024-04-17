@@ -154,7 +154,7 @@ namespace PeopleViewApp.ViewModels
                 && PostalCodeChecking()
                 && TownChecking()
                 && PhoneNumberCheching()
-                && DateOfBirthChecking();
+                /*&& DateOfBirthChecking()*/;
 
         private bool StreetNameChecking() =>
             !string.IsNullOrWhiteSpace(StreetName);
