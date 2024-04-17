@@ -79,7 +79,6 @@
                    Text="Date Of birth"
                    Style="{StaticResource TextBlockStyle}" />
         <DatePicker  Grid.Row="8" Grid.Column="1"
-                     Name="datePicker1"
                      Text="{Binding Path=DateOfBirth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource DatePickerStyle}"/>
         <TextBlock Grid.Row="9" Grid.Column="0"
